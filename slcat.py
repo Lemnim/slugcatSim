@@ -18,11 +18,18 @@ items = {
 }
 
 # 발단 전개 결말
-combatScript1 = ["슬러그캣은 독수리와 마주쳤다!", "슬러그캣은 스캐빈저에게 선빵을 쳤다!!", "조심히 기어가던 중, 도마뱀에게 딱 들켜버렸다.", "슬러그캣은 하양도마뱀을 눈치채지 못하고 밟아버렸다!"]
-combatScript2 = ["슬러그캣은 날렵하게 공격을 피했다!", "위기의 순간, 상대에게 결정적인 한방을 꽂아넣었다!", "슬러그캣은 공격을 피하지 못하고 만신창이가 되기 일보직전이다!", "상대의 회심의 일격! 슬러그캣은 가까스로 피했다!"]
-combatScript3 = ["상대가 더 강력했다... 슬러그캣은 간신히 집으로 돌아왔다.", "슬러그캣은 무사히 집으로 돌아왔다. 전리품도 챙겼다.", "그 순간, 다른 슬러그캣이 슬러그캣을 도와주었다! 슬러그캣은 무사히 집으로 돌아올 수 있었다.", "그런 상황에서도, 슬러그캣은 전리품을 챙겨 달아났다."]
+
+# 전투 스크립트
+combatScript1 = ["슬러그캣은 독수리와 마주쳤다!", "슬러그캣은 스캐빈저에게 선빵을 쳤다!!", "조심히 기어가던 중, 도마뱀에게 딱 들켜버렸다.", "슬러그캣은 하양도마뱀을 눈치채지 못하고 밟아버렸다!", "파이프를 기어가던 중 지네와 맞닥뜨렸다!"]
+combatScript2 = ["슬러그캣은 날렵하게 공격을 피했다!", "위기의 순간, 상대에게 결정적인 한방을 꽂아넣었다!", "슬러그캣은 공격을 피하지 못하고 만신창이가 되기 일보직전이다!", "상대의 회심의 일격! 슬러그캣은 가까스로 피했다!", "슬러그캣의 지능적인 공격! 방심하던 상대의 헛점을 찔렀다."]
+combatScript3 = ["상대가 더 강력했다... 슬러그캣은 간신히 집으로 돌아왔다.", "휴우, 슬러그캣은 무사히 집으로 돌아왔다. 전리품도 챙겼다.", "그 순간, 다른 슬러그캣이 슬러그캣을 도와주었다! 슬러그캣은 무사히 집으로 돌아올 수 있었다.", "그런 상황에서도, 슬러그캣은 전리품을 챙겨 달아났다.", "슬러그캣은 성공적으로 적을 물리쳤다!"]
 combatScripts = [combatScript1, combatScript2, combatScript3]
 
+# 관찰(불량) 스크립트
+badMoralScript = ["슬러그캣은 다른 슬러그캣들과 싸우기 시작했다!!!\nʕx.xʔ: ! ! ! ! !", "슬러그캣은 흙을 주워먹는다!!!\nʕo.oʔ: ? ? ?", "슬러그캣은 스캐빈저에게 손가락 욕을 날린다!\nʕ-.-ʔ: ㅗ", "슬러그캣은 껄렁한 포즈를 취한다!\nʕo.oʔ: ㅗ", "슬러그캣은 벽에다가 발길질을 하기 시작했다!!\nʕ-.-ʔ: ! !"]
+
+# 관찰(일반) 스크립트
+goodMoralScript = ["슬러그캣은 다른 슬러그캣들과 놀고 있다.\nʕ●.●ʔ: ? ?\nʕ>.<ʔ: ! !", "슬러그캣은 높은 하늘을 관찰하고 있다. \nʕ●.●ʔ: ..!", "슬러그캣은 열심히 창을 갈고 닦고 있다.\nʕ●.●ʔ: ! !", "슬러그캣은 조용히 명상하고 있다...\nʕu.uʔ: ...", "슬러그캣은 잠시 낮잠을 자는 것 같다.\nʕu.uʔ: Zzz..."]
 
 def evolution(hunger, evoLev):
     if hunger >= 4:
@@ -70,18 +77,15 @@ def slPupMake(evoLev, friship):
 def look(moral, friship):
     friship += 20
     print("슬러그캣은 자신을 관찰하는 당신에게 호감을 느낀다...")
-    time.sleep(1)
+    time.sleep(0.6)
+    moral -= random.randint(1, 2)
     
-    if moral < 3:
+    if moral <= 0:
         friship -= 30
-        print("슬러그캣은 다른 슬러그캣들과 싸우기 시작했다!!!")
-        print("ʕx.xʔ: ! ! ! ! !")
+        print(random.choice(badMoralScript))
         return moral, friship
     else:
-        moral -= 1
-        print("슬러그캣은 다른 슬러그캣들과 놀고 있다.")
-        print("ʕ●.●ʔ: ? ?")
-        print("ʕ>.<ʔ: ! !")
+        print(random.choice(goodMoralScript))
         return moral, friship
         
 def study(moral, friship):
@@ -115,14 +119,13 @@ def combat(friship, haveItem):
     return friship, haveItem
 
 def drop(haveItem:list):
-    c = items.keys()
-    c = random.choice(list(c))
+    c = random.choice(list(items.keys()))
     haveItem.append(c)
     print(f"전리품으로 {c}을(를) 획득했다!")
     return haveItem
 
 def status():
-    print("### 슬러그캣의 상태 ###")
+    print("####슬러그캣의 상태####")
     print(f"배고픔: {slCatHunger}")
     print(f"진화 단계: {evolutionLevel}")
     print(f"호감도: {friendship}")
