@@ -11,11 +11,24 @@ haveItems = []
 foods = {"박쥐파리" : 1, "팝콘" : 4}
 
 # 아이템
-items = {
-    "마크식 황금 스테이크": {"효과" : "배고픔 증가", "변화량": 12, "설명": "슬러그캣은 마크식 황금 스테이크를 아주 맛있게 먹었다!\nʕ>.<ʔ: ♥ ♥ ♥!"},
-    "분홍색 진주": {"효과": "호감도 증가", "변화량": 200, "설명": "반짝이는 분홍색 진주를 슬러그캣에게 선물했다!\nʕ>.<ʔ: ♥ ♥ ♥!"},
-    "착한 슬러그캣이 되는 법 제 1권": {"효과": "도덕성 증가", "변화량": 10, "설명": "슬러그캣에게 책을 읽어주었다.\nʕ●.●ʔ: !"}
-}
+items = {}
+
+class ItemMake:
+    def __init__(self, name, effect, change, explain, canMake, makeScript):
+        self.name = name
+        self.effect = effect
+        self.change = change
+        self.explain = explain
+        self.canMake = canMake
+        self.makeScript = makeScript
+
+        items[name] = {"효과": effect, "변화량": change, "설명": explain, "제작가능": canMake, "제작대사": makeScript}
+
+ItemMake("마크식 황금 스테이크", "배고픔 증가", 12, "슬러그캣은 마크식 황금 스테이크를 아주 맛있게 먹었다!\nʕ>.<ʔ: ♥ ♥ ♥!", False, None)
+ItemMake("분홍색 진주", "호감도 증가", 200, "반짝이는 분홍색 진주를 슬러그캣에게 선물했다!\nʕ>.<ʔ: ♥ ♥ ♥!", False, None)
+ItemMake("착한 슬러그캣이 되는 법 제 1권", "도덕성 증가", 10, "슬러그캣에게 책을 읽어주었다.\nʕ●.●ʔ: !", False, None)
+ItemMake("푸딩", "배고픔 증가", 3, "슬러그캣에게 맛있는 푸딩을 먹였다!\nʕ●.●ʔ: ♥!", True, "우유를 데우고.. 젤라틴을 넣고... \nʕ●.●ʔ: !")
+
 
 # 발단 전개 결말
 
@@ -154,8 +167,12 @@ def use_item(item, hunger, evoLev, friship, moral):
     else:
         pass
 
-
-
+def cook(friship, haveItem:list, whatMake):
+    friship -= 75
+    haveItem.append(whatMake)
+    print(items[whatMake]["제작대사"])
+    print(f"슬러그캣과 같이 {whatMake}을(를) 만들었다!")
+    return friship, haveItem
 
 
 print("슬러그캣 시뮬레이터!")
@@ -188,6 +205,15 @@ while True:
             haveItems.remove(b)
         else:
             print("그런 아이템은 없다.")
+    elif a == "요리하기":
+        if friendship >= 75:
+            b = input("어떤 음식을 요리할까? ")
+            if items[b]["제작가능"]:
+                friendship, haveItems = cook(friendship, haveItems, b)
+            else:
+                print("요리할 수 없는 것이다.")
+        else:
+            print("슬러그캣은 요리하고 싶지 않은 것 같다...")
         
     else:
         break
