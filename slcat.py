@@ -6,6 +6,7 @@ evolutionLevel = 0
 friendship = 0
 morals = 4
 haveItems = []
+recipes = []
 sickness = False
 
 # 음식
@@ -31,7 +32,8 @@ ItemMake("착한 슬러그캣이 되는 법 제 1권", ["도덕성 증가"], [10
 ItemMake("푸딩", ["배고픔 증가"], [7], "슬러그캣에게 맛있는 푸딩을 먹였다!\nʕ●.●ʔ: ♥!", True, "우유를 데우고.. 젤라틴을 넣고... \nʕ●.●ʔ: !")
 ItemMake("육개장 사발면", ["배고픔 증가", "호감도 증가"], [3, 30], "슬러그캣은 육개장 사발면을 매워하면서 먹었다!\nʕx.xʔ: ♥ ♥!", True, "물을 끓이고.. 기다림의 시간...\nʕu.uʔ: z..!")
 ItemMake("달콤바삭 애플파이", ["배고픔 증가", "호감도 증가", "도덕성 증가"], [2, 50, 6], "슬러그캣은 달콤하고 바삭한 애플파이를 정말 좋아했다!\nʕ>.<ʔ: ♥ ♥ ♥!", True, "사과를 졸이고.. 파이에 넣어서... 굽기!\nʕ●.●ʔ: ♥!")
-ItemMake("카르마 꽃", ["치유"], [1], "슬러그캣은 카르마 꽃을 달여먹었다... 병이 치유되었다!\nʕ●.●ʔ: !", False, None)
+ItemMake("카르마 꽃", ["치유"], [1], "슬러그캣은 카르마 꽃을 달여먹었다... \nʕ●.●ʔ: !", False, None)
+ItemMake("보리차", ["치유", "도덕성 증가"], [0.5, 1], "슬러그캣과 같이 따뜻한 보리차를 마셨다!\nʕu.uʔ: !", True, "보리를 볶고.. 물을 끓여서...\nʕ●.●ʔ: !")
 
 # 발단 전개 결말
 
@@ -87,17 +89,18 @@ def slPupMake(evoLev, friship):
         return evoLev, friship
 
 def look(moral, friship):
-    friship += 20
     print("슬러그캣은 자신을 관찰하는 당신에게 호감을 느낀다...")
     time.sleep(0.6)
     moral -= random.randint(1, 2)
     
     if moral <= 0:
-        friship -= 30
+        friship -= 10
         print(random.choice(badMoralScript))
         return moral, friship
     else:
+        friship += 35
         print(random.choice(goodMoralScript))
+        
         return moral, friship
         
 def study(moral, friship):
@@ -129,9 +132,9 @@ def combat(friship, haveItem, sick):
     print("ʕ●.<ʔ: ♥ ♥ ♥!")
     print(f"현재 호감도는 {friship}이다!")
 
-    if 0.3 >= random.random():
+    if 0.2 >= random.random():
         sick = True
-        print("슬러그캣은 이번 전투에서 병에 걸렸다!")
+        print("슬러그캣은 이번 전투에서 병에 걸렸다! 콜록 콜록...")
     else:
         pass
 
@@ -150,6 +153,7 @@ def status():
     print(f"호감도: {friendship}")
     print(f"도덕성: {morals}")
     print(f"아이템: {haveItems}")
+    print(f"질병: {sickness}")
     print("#######################")
 
 def use_item(item, hunger, evoLev, friship, moral, sick):
@@ -165,8 +169,12 @@ def use_item(item, hunger, evoLev, friship, moral, sick):
             friship += change
         elif effect == "도덕성 증가":
             moral += change
-        elif effect == "치유":
-            sick = False
+        elif effect == "치유" and sick:
+            if change >= random.random():
+                sick = False
+                print("병이 치유되었다!")
+            else:
+                print("슬러그캣은 아직 병에서 회복하지 못했다...")
     
     return hunger, evoLev, friship, moral, sick
 
@@ -174,12 +182,31 @@ def cook(friship, haveItem:list, whatMake):
     friship -= 75
     haveItem.append(whatMake)
     print(items[whatMake]["제작대사"])
-    print(f"슬러그캣과 같이 {whatMake}을(를) 만들었다!")
+    time.sleep(0.5)
+    print(f"슬러그캣과 같이 {whatMake}을(를) 요리했다!")
     return friship, haveItem
 
+def sick(friship, moral):
+    print("슬러그캣은 병에 걸려있다... 어서 치유해주자!")
+    print("ʕx.xʔ: ! !")
+    if 0.5 > random.random():
+        c = random.randint(5, 55)
+        friship -= c
+        print(f"아파서 호감도가 {c}만큼 하락했다...")
+    if 0.5 > random.random():
+        c = random.randint(1, 3)
+        moral -= c
+        print(f"아파서 도덕성이 {c}만큼 하락했다...")
+
+    return friship, moral
 
 print("슬러그캣 시뮬레이터!")
 while True:
+    if sickness:
+        friendship, morals = sick(friendship, morals)
+    else:
+        pass
+
     a = input("무엇을 할까? ")
 
     if a == "먹이주기":
