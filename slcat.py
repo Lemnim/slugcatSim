@@ -7,7 +7,7 @@ friendship = 0
 morals = 4
 haveItems = []
 recipes = []
-haveRecipes = ["푸딩", "보리차"]
+haveRecipes = ["푸딩", "보리차" ]
 sickness = False
 
 # 음식
@@ -17,27 +17,32 @@ foods = {"박쥐파리" : 1, "팝콘" : 4}
 items = {}
 
 class ItemMake:
-    def __init__(self, name, effect, change, explain, canMake, makeScript):
+    def __init__(self, name, itemType, effect, change, explain, canMake, makeScript):
         self.name = name
+        self.itemType = itemType
         self.effect = effect
         self.change = change
         self.explain = explain
         self.canMake = canMake
         self.makeScript = makeScript
 
-        items[name] = {"효과": effect, "변화량": change, "설명": explain, "제작가능": canMake, "제작대사": makeScript}
+        items[name] = {"분류": itemType, "효과": effect, "변화량": change, "설명": explain, "제작가능": canMake, "제작대사": makeScript}
         if canMake:
             recipes.append(name)
 
-ItemMake("마크식 황금 스테이크", ["배고픔 증가"], [12], "슬러그캣은 마크식 황금 스테이크를 아주 맛있게 먹었다!\nʕ>.<ʔ: ♥ ♥ ♥!", False, None)
-ItemMake("분홍색 진주", ["호감도 증가"], [200], "반짝이는 분홍색 진주를 슬러그캣에게 선물했다!\nʕ>.<ʔ: ♥ ♥ ♥!", False, None)
-ItemMake("착한 슬러그캣이 되는 법 제 1권", ["도덕성 증가"], [10], "슬러그캣에게 책을 읽어주었다.\nʕ●.●ʔ: !", False, None)
-ItemMake("푸딩", ["배고픔 증가"], [5], "슬러그캣에게 맛있는 푸딩을 먹였다!\nʕ●.●ʔ: ♥!", True, "우유를 데우고.. 젤라틴을 넣고... \nʕ●.●ʔ: !")
-ItemMake("육개장 사발면", ["배고픔 증가", "호감도 증가"], [3, 30], "슬러그캣은 육개장 사발면을 매워하면서 먹었다!\nʕx.xʔ: ♥ ♥!", True, "물을 끓이고.. 기다림의 시간...\nʕu.uʔ: z..!")
-ItemMake("달콤바삭 애플파이", ["배고픔 증가", "호감도 증가", "도덕성 증가"], [2, 50, 6], "슬러그캣은 달콤하고 바삭한 애플파이를 정말 좋아했다!\nʕ>.<ʔ: ♥ ♥ ♥!", True, "사과를 졸이고.. 파이에 넣어서... 굽기!\nʕ●.●ʔ: ♥!")
-ItemMake("카르마 꽃", ["치유"], [1], "슬러그캣은 카르마 꽃을 달여먹었다... \nʕ●.●ʔ: !", False, None)
-ItemMake("보리차", ["치유", "도덕성 증가"], [0.5, 1], "슬러그캣과 같이 따뜻한 보리차를 마셨다!\nʕu.uʔ: !", True, "보리를 볶고.. 물을 끓여서...\nʕ●.●ʔ: !")
-ItemMake("스위트 포테이토 피자", ["배고픔 증가", "호감도 증가", "도덕성 증가"], [3, 60, 4], "슬러그캣은 친구들과 다 같이 스위트 포테이토 피자를 먹었다!\nʕ>.<ʔ: ♥ ♥ ♥!\nʕ●.●ʔ: ♥!\nʕu.uʔ: ♥ ♥!", True, "도우를 반죽하고.. 토핑을 올려서... 오븐에 굽기!\nʕ●.●ʔ: ♥!")
+# 음식
+ItemMake("마크식 황금 스테이크", "음식", ["배고픔 증가"], [12], "슬러그캣은 마크식 황금 스테이크를 아주 맛있게 먹었다!\nʕ>.<ʔ: ♥ ♥ ♥!", False, None)
+ItemMake("푸딩", "음식", ["배고픔 증가"], [5], "슬러그캣에게 맛있는 푸딩을 먹였다!\nʕ●.●ʔ: ♥!", True, "우유를 데우고.. 젤라틴을 넣고... \nʕ●.●ʔ: !")
+ItemMake("육개장 사발면", "음식", ["배고픔 증가", "호감도 증가"], [3, 50], "슬러그캣은 육개장 사발면을 매워하면서 먹었다!\nʕx.xʔ: ♥ ♥!", True, "물을 끓이고.. 스프와 면을 넣은 후... 기다림의 시간...\nʕu.uʔ: z..!")
+ItemMake("달콤바삭 애플파이", "음식", ["배고픔 증가", "호감도 증가", "도덕성 증가"], [2, 50, 6], "슬러그캣은 달콤하고 바삭한 애플파이를 정말 좋아했다!\nʕ>.<ʔ: ♥ ♥ ♥!", True, "사과를 졸이고.. 파이에 넣어서... 굽기!\nʕ●.●ʔ: ♥!")
+ItemMake("카르마 꽃", "음식", ["치유"], [1], "슬러그캣은 카르마 꽃을 달여먹었다... \nʕ●.●ʔ: !", False, None)
+ItemMake("보리차", "음식", ["치유", "도덕성 증가"], [0.5, 1], "슬러그캣과 같이 따뜻한 보리차를 마셨다!\nʕu.uʔ: !", True, "보리를 볶고.. 물을 끓여서...\nʕ●.●ʔ: !")
+ItemMake("스위트 포테이토 피자", "음식", ["배고픔 증가", "호감도 증가", "도덕성 증가"], [3, 60, 4], "슬러그캣은 친구들과 다 같이 스위트 포테이토 피자를 먹었다!\nʕ>.<ʔ: ♥ ♥ ♥!\nʕ●.●ʔ: ♥!\nʕu.uʔ: ♥ ♥!", True, "도우를 반죽하고.. 토핑을 올려서... 오븐에 굽기!\nʕ●.●ʔ: ♥!")
+
+# 물건
+ItemMake("분홍색 진주", "물건", ["호감도 증가"], [200], "반짝이는 분홍색 진주를 슬러그캣에게 선물했다!\nʕ>.<ʔ: ♥ ♥ ♥!", False, None)
+ItemMake("착한 슬러그캣이 되는 법 제 1권", "물건", ["도덕성 증가"], [10], "슬러그캣에게 책을 읽어주었다.\nʕ●.●ʔ: !", False, None)
+ItemMake("민들레 복숭아 핸드크림", "물건", ["치유", "호감도 증가"], [0.6, 70], "슬러그캣에게 민들레 향기가 나는 핸드크림을 발라주었다!\nʕ●.●ʔ: !", True, "민들레 복숭아 오일을 넣고.. 깨끗한 물도 넣어서... 섞기!\nʕu.uʔ: !")
 
 # 발단 전개 결말
 
@@ -92,7 +97,7 @@ def slPupMake(evoLev, friship):
         print("슬러그캣은 아직 다른 슬러그캣에게 관심이 없어보인다...")
         return evoLev, friship
 
-def randomPlus(allList, haveList:list, what):
+def notDupeDrop(allList, haveList:list, what):
     for i in random.sample(allList, len(allList)):
         if i not in haveList:
             haveList.append(i)
@@ -115,7 +120,7 @@ def look(moral, friship, haveRecipe:list):
         friship += 35
         print(random.choice(goodMoralScript))
         if 0.5 >= random.random():
-            haveRecipe = randomPlus(recipes, haveRecipe, "레시피")
+            haveRecipe = notDupeDrop(recipes, haveRecipe, "레시피")
     return moral, friship, haveRecipe
         
 def study(moral, friship):
@@ -254,12 +259,20 @@ while True:
     elif a == "요리하기":
         if friendship >= 75:
             b = input("어떤 음식을 요리할까? ")
-            if b in haveRecipes:
+            if b in haveRecipes and items[b]["분류"] == "음식":
                 friendship, haveItems = make(friendship, haveItems, b)
             else:
                 print("요리할 수 없는 것이다.")
         else:
             print("슬러그캣은 요리하고 싶지 않은 것 같다...")
+    elif a == "제작하기":
+        if friendship >= 75:
+            b = input("어떤 물건을 제작할까? ")
+            if b in haveRecipes and items[b]["분류"] == "물건":
+                friendship, haveItems = make(friendship, haveItems, b)
+            else:
+                print("제작할 수 없는 것이다.")
+
             
             
             
