@@ -1,8 +1,9 @@
 from enum import Enum
+import time
 
 items = {}
 money = 0
-haveItems = []
+haveItems = ["물뿌리개"]
 
 class Base(Enum):
     FARMING = 1
@@ -18,6 +19,11 @@ class Item:
         items[name] = self
         haveItems.append(name)
 
+# 아이템
+Item("빵", ["밀"], 80)
+Item("밀", [(Base.FARMING, 0, 5)], 10)
+
+
 def sell(name, money, haveItems:list):
     if name in haveItems:
         item = items[name]
@@ -29,8 +35,7 @@ def sell(name, money, haveItems:list):
         print("판매할 수 없는 물건이다!")
         
     return money, haveItems
-        
-        
+
 def craft(name, haveItems:list):
     item = items[name]
     for i in item.material:
@@ -47,10 +52,16 @@ def craft(name, haveItems:list):
 def status():
     print(f"돈: {money}")
     print(f"아이템: {haveItems}")
-        
-Item("빵", ["밀"], 80)
-Item("밀", [Base.FARMING], 10)
-
+    
+def farm(name, money, haveItems:list):
+    seed = items[name]
+    money -= seed.material[0][1]
+    print("씨앗이 자라나는 중...")
+    time.sleep(seed.material[0][2])
+    print(f"{name}을(를) 수확했다!")
+    haveItems.append(name)
+    return money, haveItems
+    
 
 while True:
     a = input("무엇을 할까? ")
@@ -63,3 +74,6 @@ while True:
         money, haveItems = sell(b, money, haveItems)
     elif a == "상태창":
         status()
+    elif a == "농사":
+        b = input("어떤 작물을 재배할까? ")
+        money, haveItems = farm(b, money, haveItems)
