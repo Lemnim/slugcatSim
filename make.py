@@ -1,9 +1,11 @@
 from enum import Enum
 import time
+import random
 
 items = {}
-money = 0
+money = 500
 haveItems = []
+haveAnimals = []
 
 class Base(Enum):
     FARMING = 1
@@ -29,13 +31,13 @@ class Item:
             print(f"현재 돈: {money}")
             haveItems.remove(self.name)
         else:
-            print("가지고 있지 않은 물건이다!")
+            print("가지고 있지 않다!")
             
         return money, haveItems
     
     def craft(self, haveItems:list):
         if isinstance(items[self.name].material[0], Base):
-            print("제작할 수 없는 물건이다!")
+            print("제작할 수 없다!")
             return haveItems
         
         for i in self.material:
@@ -73,22 +75,82 @@ class Farm(Item):
     
 
 class Animal(Item):
-    def __init__(self, name, material, sellPrice, gainTime, animalPrice,):
+    def __init__(self, name, material, sellPrice, gainTime, animalPrice, milk, meat):
         super().__init__(name, material, sellPrice)
+        self.gainTime = gainTime
+        self.animalPrice = animalPrice
+        self.milk = milk
+        self.meat = meat
+
+        self.lastTime = 0
+
+    def buy_animal(self, money, haveAnimals:list):
+        if self.animalPrice <= money:
+            haveAnimals.append(self.name)
+            money -= self.animalPrice
+            print(f"{self.name}을(를) {self.animalPrice}에 구매했다!")
+        else:
+            print(f"{self.name}을(를) 구매하기에는 돈이 부족하다...")
+
+        return money, haveAnimals    
+
+    def can_gain(self):
+        nowTime = time.time()
+        if nowTime - self.lastTime >= self.gainTime:
+            self.lastTime = nowTime
+            return True
+        else:
+            return False
+
+    def milking(self, haveItems:list):
+        if self.can_gain() and not self.milk == None:
+            for i in range(haveAnimals.count(self.name)):
+                haveItems.append(self.milk.name)
+            print(f"{self.milk.name}을(를) {haveAnimals.count(self.name)}개 짜냈다!")
+        else:
+            print(f"아직 {self.milk.name}을(를) 짜낼 수 없다!")
+        return haveItems
+
+    def kill(self, haveItems:list, haveAnimals:list):
+        haveAnimals.remove(self.name)
+        if not self.meat == None:
+            a = random.randint(2, 4)
+            for i in range(1, a):
+                haveItems.append(self.meat.name)
+            print(f"{self.name}을(를) 도축해서 {self.meat.name}을(를) {a-1}개 얻었다!")
+        else:
+            print(f"{self.name}을 죽였다.")
+
+        return haveItems, haveAnimals
+
         
-    
+class Livestock(Item):
+    def __init__(self, name, material, sellPrice):
+        super().__init__(name, material, sellPrice)
 
 # 아이템
 # 제작
 Item("빵", ["밀"], 16)
+Item("팝콘", ["옥수수"], 35)
+Item("치즈", ["우유"], 25)
+Item("콘치즈", ["옥수수", "치즈"], 70)
+Item("치즈버거", ["빵", "치즈", "소고기"], 120)
 
 # 농업
 Farm("밀", [Base.FARMING], 8, 1, 0)
-Farm("옥수수", [Base.FARMING], 30, 2.5, 10)
+Farm("옥수수", [Base.FARMING], 20, 2.5, 10)
+
+# 낙농업
+Livestock("우유", [Base.LIVESTOCK], 15)
+Livestock("소고기", [Base.LIVESTOCK], 70)
+
+# 동물
+Animal("소", [Base.LIVESTOCK], 50, 45, 150, items["우유"], items["소고기"])
 
 def status():
     print(f"돈: {money}원")
     print(f"아이템: {haveItems}")
+    print(f"가축: {haveAnimals}")
     
 
 while True:
@@ -114,3 +176,19 @@ while True:
             money, haveItems = items[b].farming(money, haveItems)
         else:
             print("재배할 수 없다.")
+    elif a == "가축 구매":
+        b = input("어떤 가축을 구매할까? ")
+        if b in items and isinstance(items[b], Animal):
+            money, haveAnimals = items[b].buy_animal(money, haveAnimals)
+        else:
+            print("구매할 수 없다.")
+    elif a == "착유":
+        b = input("어떤 가축의 젖을 짤까? ")
+        if b in haveAnimals:
+            haveItems = items[b].milking(haveItems)
+        else:
+            print("착유할 수 없다.")
+    elif a == "도축":
+        b = input("어떤 가축을 도축할까? ")
+        if b in haveAnimals:
+            haveItems, haveAnimals = items[b].kill(haveItems, haveAnimals)
