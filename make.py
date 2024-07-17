@@ -10,6 +10,9 @@ class Base(Enum):
     LIVESTOCK = 2
     FISHING = 3
 
+# 낙농업은 기반이 되는 동물(소, 양등)을 먼저 구매해서 농장에 넣어두고, 그후 일정 시간마다 들어가서 아이템을 얻을수 있게함.
+# 어업은 돈을 넣고, 그 돈과 비슷한 정도의 물고기를 랜덤으로 낚을수 있게함.
+
 class Item:
     def __init__(self, name, material, price):
         self.name = name
