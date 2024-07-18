@@ -75,12 +75,13 @@ class Farm(Item):
     
 
 class Animal(Item):
-    def __init__(self, name, material, sellPrice, gainTime, animalPrice, milk, meat):
+    def __init__(self, name, material, sellPrice, gainTime, animalPrice, milk, meat, breedPer):
         super().__init__(name, material, sellPrice)
         self.gainTime = gainTime
         self.animalPrice = animalPrice
         self.milk = milk
         self.meat = meat
+        self.breedPer = breedPer
 
         self.lastTime = 0
 
@@ -124,7 +125,19 @@ class Animal(Item):
         return haveItems, haveAnimals
     
     def breeding(self, money, haveAnimals:list):
-        if haveAnimals in self.name >= 2:
+        if haveAnimals.count(self.name) >= 2:
+            print(f"{self.name}의 번식 확률 {self.breedPer * 100}%, 번식 비용 {self.animalPrice * 0.5}원")
+            if check("번식"):
+                money -= self.animalPrice * 0.5
+                if random.random() <= self.breedPer:
+                    haveAnimals.append(self.name)
+                    print(f"{self.name}은(는) 번식에 성공했다!")
+                else:
+                    print(f"{self.name}은(는) 번식에 실패했다...")
+        else:
+            print("번식을 시도하기에는 개체수가 부족하다...")
+        
+        return money, haveAnimals
             
 
         
@@ -135,11 +148,16 @@ class Livestock(Item):
 # 아이템
 # 제작
 Item("빵", ["밀"], 16)
+Item("면", ["밀"], 12)
 Item("팝콘", ["옥수수"], 30)
 Item("치즈", ["우유"], 25)
+Item("크림", ["우유"], 25)
+Item("크림빵", ["빵", "크림"], 40)
 Item("콘치즈", ["옥수수", "치즈"], 70)
 Item("치즈버거", ["빵", "치즈", "소고기"], 100)
 Item("토마토 케첩", ["토마토"], 15)
+Item("핫도그", ["빵", "토마토 케첩", "돼지고기"], 75)
+Item("로제 파스타", ["면", "토마토", "크림"], 68)
 
 # 농업
 Farm("밀", [Base.FARMING], 8, 1, 0)
@@ -152,14 +170,23 @@ Livestock("소고기", [Base.LIVESTOCK], 50)
 Livestock("돼지고기", [Base.LIVESTOCK], 25)
 
 # 동물
-Animal("소", [Base.LIVESTOCK], 50, 45, 150, items["우유"], items["소고기"])
-Animal("돼지", [Base.LIVESTOCK], 20, None, 70, None, items["돼지고기"])
+Animal("소", [Base.LIVESTOCK], 50, 45, 150, items["우유"], items["소고기"], 0.2)
+Animal("돼지", [Base.LIVESTOCK], 20, None, 70, None, items["돼지고기"], 0.6)
 
 def status():
     print(f"돈: {money}원")
-    print(f"아이템: {haveItems}")
-    print(f"가축: {haveAnimals}")
+    print("아이템: " + ", ".join(haveItems))
+    print("가축: " + ", ".join(haveAnimals))
     
+def check(what):
+    while True:
+        a = input(f"{what}을(를) 시도할까? Y/N ")
+        if a == "Y":
+            return True
+        elif a == "N":
+            return False
+        else:
+            print("Y 혹은 N으로만 입력하자!")
 
 while True:
     a = input("무엇을 할까? ")
@@ -200,3 +227,9 @@ while True:
         b = input("어떤 가축을 도축할까? ")
         if b in haveAnimals:
             haveItems, haveAnimals = items[b].kill(haveItems, haveAnimals)
+    elif a == "번식":
+        b = input("어떤 가축을 번식시킬까? ")
+        if b in haveAnimals:
+            money, haveAnimals = items[b].breeding(money, haveAnimals)
+        else:
+            print("번식할 수 없다.")
