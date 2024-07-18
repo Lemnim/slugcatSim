@@ -103,7 +103,7 @@ class Animal(Item):
             return False
 
     def milking(self, haveItems:list):
-        if self.can_gain() and not self.milk == None:
+        if self.can_gain():
             for i in range(haveAnimals.count(self.name)):
                 haveItems.append(self.milk.name)
             print(f"{self.milk.name}을(를) {haveAnimals.count(self.name)}개 짜냈다!")
@@ -122,6 +122,10 @@ class Animal(Item):
             print(f"{self.name}을 죽였다.")
 
         return haveItems, haveAnimals
+    
+    def breeding(self, money, haveAnimals:list):
+        if haveAnimals in self.name >= 2:
+            
 
         
 class Livestock(Item):
@@ -131,21 +135,25 @@ class Livestock(Item):
 # 아이템
 # 제작
 Item("빵", ["밀"], 16)
-Item("팝콘", ["옥수수"], 35)
+Item("팝콘", ["옥수수"], 30)
 Item("치즈", ["우유"], 25)
 Item("콘치즈", ["옥수수", "치즈"], 70)
-Item("치즈버거", ["빵", "치즈", "소고기"], 120)
+Item("치즈버거", ["빵", "치즈", "소고기"], 100)
+Item("토마토 케첩", ["토마토"], 15)
 
 # 농업
 Farm("밀", [Base.FARMING], 8, 1, 0)
 Farm("옥수수", [Base.FARMING], 20, 2.5, 10)
+Farm("토마토", [Base.FARMING], 12, 2, 6)
 
 # 낙농업
 Livestock("우유", [Base.LIVESTOCK], 15)
-Livestock("소고기", [Base.LIVESTOCK], 70)
+Livestock("소고기", [Base.LIVESTOCK], 50)
+Livestock("돼지고기", [Base.LIVESTOCK], 25)
 
 # 동물
 Animal("소", [Base.LIVESTOCK], 50, 45, 150, items["우유"], items["소고기"])
+Animal("돼지", [Base.LIVESTOCK], 20, None, 70, None, items["돼지고기"])
 
 def status():
     print(f"돈: {money}원")
@@ -184,7 +192,7 @@ while True:
             print("구매할 수 없다.")
     elif a == "착유":
         b = input("어떤 가축의 젖을 짤까? ")
-        if b in haveAnimals:
+        if b in haveAnimals and not items[b].milk == None:
             haveItems = items[b].milking(haveItems)
         else:
             print("착유할 수 없다.")
